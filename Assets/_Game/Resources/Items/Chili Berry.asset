@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 943ee2dd89364c949bbcbd53696cc3fe, type: 3}
+  m_Name: Chili Berry
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: Chili Berry
+  description: Spicy! Fire creatures love this.
+  icon: {fileID: 0}
+  itemType: 1
+  weight: 1
+  prefab: {fileID: 4424634639404009874, guid: b3972a073da2b8a47948fec902a5ce45, type: 3}
+  healthRestore: 5
+  boostStat: 0
+  boostElement: 1
+  boostAmount: 2
+  duration: 2
+  captureRate: 0
+  effectiveType: 0

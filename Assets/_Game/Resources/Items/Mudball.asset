@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 943ee2dd89364c949bbcbd53696cc3fe, type: 3}
+  m_Name: Mudball
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: Mudball
+  description: A throwable ball of mud.
+  icon: {fileID: 0}
+  itemType: 3
+  weight: 2
+  prefab: {fileID: 3814027670417140728, guid: 5a84b118b9ee490489682448ab5e4c60, type: 3}
+  healthRestore: 0
+  boostStat: 0
+  boostElement: 0
+  boostAmount: 0
+  duration: 0
+  captureRate: 0
+  effectiveType: 0
