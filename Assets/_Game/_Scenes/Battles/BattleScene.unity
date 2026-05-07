@@ -1498,7 +1498,7 @@ Transform:
   m_GameObject: {fileID: 961739749}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22323166, y: -0.45778027, z: 0.11991605, w: 0.85218835}
-  m_LocalPosition: {x: 18.48, y: 11.91, z: 76.66}
+  m_LocalPosition: {x: 20.1, y: 11.91, z: 81.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1557,7 +1557,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1387626816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1777,7 +1777,7 @@ Transform:
   m_GameObject: {fileID: 1387626815}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22323166, y: -0.4577803, z: 0.119916044, w: 0.85218835}
-  m_LocalPosition: {x: 18.48, y: 11.91, z: 76.66}
+  m_LocalPosition: {x: 20.1, y: 11.91, z: 81.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1896,7 +1896,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1592923558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2159,7 +2159,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!136 &1803979599
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2249,7 +2249,7 @@ Transform:
   m_GameObject: {fileID: 1803979598}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.48, y: 9.66, z: 80.66}
+  m_LocalPosition: {x: 20.1, y: 9.66, z: 85.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2386,6 +2386,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: totem
       objectReference: {fileID: 0}
+    - target: {fileID: 2131883800115171185, guid: 386b75b01baafe743a61181e22aaf8a5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2406,6 +2410,10 @@ PrefabInstance:
     - target: {fileID: 3814027670417140728, guid: 5a84b118b9ee490489682448ab5e4c60, type: 3}
       propertyPath: m_Name
       value: Mudball
+      objectReference: {fileID: 0}
+    - target: {fileID: 3814027670417140728, guid: 5a84b118b9ee490489682448ab5e4c60, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9208863207639811298, guid: 5a84b118b9ee490489682448ab5e4c60, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2503,6 +2511,10 @@ PrefabInstance:
     - target: {fileID: 4424634639404009874, guid: b3972a073da2b8a47948fec902a5ce45, type: 3}
       propertyPath: m_Name
       value: Pepper
+      objectReference: {fileID: 0}
+    - target: {fileID: 4424634639404009874, guid: b3972a073da2b8a47948fec902a5ce45, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
