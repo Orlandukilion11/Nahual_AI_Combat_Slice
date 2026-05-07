@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI; // Required for UI manipulation
+using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
@@ -14,7 +15,8 @@ public class BattleSystem : MonoBehaviour
     public int enemyHP = 100;
 
     [Header("UI References")]
-    public Text dialogueText; // We will link this in the editor
+    public UnityEngine.UI.Text dialogueText;
+    public LLMModels llmBrain; // The link to Groq AI
 
     void Start()
     {
@@ -28,8 +30,6 @@ public class BattleSystem : MonoBehaviour
     IEnumerator SetupBattle()
     {
         dialogueText.text = "A wild Nahual appears!";
-
-        // Wait 2 seconds so the player can read
         yield return new WaitForSeconds(2f);
 
         state = BattleState.PLAYERTURN;
@@ -41,10 +41,8 @@ public class BattleSystem : MonoBehaviour
         dialogueText.text = "Choose your action: Attack, Heal, or Flee.";
     }
 
-    // Hook this to a UI Button
     public void OnAttackButton()
     {
-        // Prevent clicking if it's not the player's turn
         if (state != BattleState.PLAYERTURN) return;
 
         int damage = UnityEngine.Random.Range(15, 25);
@@ -59,23 +57,43 @@ public class BattleSystem : MonoBehaviour
         else
         {
             state = BattleState.ENEMYTURN;
-            // Trigger the AI's turn
             StartCoroutine(EnemyAITurn());
         }
     }
 
+    // 1. The Nahual's turn starts here
     IEnumerator EnemyAITurn()
     {
         dialogueText.text = "The Nahual is thinking...";
 
-        // Tomorrow, we replace this 2-second wait with a real API call to Claude/OpenAI
-        yield return new WaitForSeconds(2f);
+        // Send the HP data to the LLMModels script and wait for the AI's answer
+        yield return StartCoroutine(llmBrain.GetNahualDecision(enemyHP, playerHP, ExecuteAIAction));
+    }
 
-        int enemyDamage = UnityEngine.Random.Range(10, 20);
-        playerHP -= enemyDamage;
-        dialogueText.text = "The Nahual attacks for " + enemyDamage + " damage!";
+    // 2. The AI's answer arrives here
+    void ExecuteAIAction(string aiDecision)
+    {
+        if (aiDecision == "Heal")
+        {
+            int healAmount = 25;
+            enemyHP += healAmount;
+            dialogueText.text = "The AI chose to HEAL! Nahual recovered " + healAmount + " HP.";
+        }
+        else // It chose to Attack
+        {
+            int enemyDamage = UnityEngine.Random.Range(10, 20);
+            playerHP -= enemyDamage;
+            dialogueText.text = "The AI chose to ATTACK! You took " + enemyDamage + " damage.";
+        }
 
-        yield return new WaitForSeconds(2f);
+        // Move to the final step
+        StartCoroutine(FinishEnemyTurn());
+    }
+
+    // 3. We calculate if anyone died and pass the turn back to the player
+    IEnumerator FinishEnemyTurn()
+    {
+        yield return new WaitForSeconds(3f);
 
         if (playerHP <= 0)
         {
