@@ -7,16 +7,16 @@ public class LLMModels : MonoBehaviour
 {
     [Header("API Settings")]
     public string apiKey; 
-    private string apiUrl = "htt://api.groq.com/openai/v1/chat/completions";
+    private string apiUrl = "https://api.groq.com/openai/v1/chat/completions";
 
     // We use an Action callback to send the AI's final answer back to the BattleSystem
     public IEnumerator GetNahualDecision(int enemyHP, int playerHP, System.Action<string> callback)
     {
         // 1. The Prompt: We give the AI the current state of the battle
-        string prompt = $"You are a Nahual monster in a turn-based RPG. Your HP is {enemyHP}. The player's HP is {playerHP}. You can choose one action: 'Attack' or 'Heal'. Respond with exactly one word: either Attack or Heal.";
-
+        string hpStatus = (enemyHP < 35) ? "CRITICALLY LOW" : "HEALTHY";
+        string prompt = "You are a wild beast in an RPG. Your HP is " + hpStatus + ". Choose ONE action: Claw, Bite, Tackle, SpiritStrike, Heal, Flee. RULE: If your HP is CRITICALLY LOW, you MUST answer with Heal or Flee. If HEALTHY, choose an attack. Respond with EXACTLY ONE WORD.";
         // 2. The JSON Payload
-        string jsonData = $"{{\"model\": \"gpt-3.5-turbo\", \"messages\": [{{\"role\": \"user\", \"content\": \"{prompt}\"}}], \"temperature\": 0.7}}";
+        string jsonData = "{\"model\": \"llama-3.1-8b-instant\", \"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}], \"temperature\": 0.0}";
 
         // 3. The Web Request
         using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
@@ -28,35 +28,40 @@ public class LLMModels : MonoBehaviour
             // Required Headers for the API
             request.SetRequestHeader("Content-Type", "application/json");
             request.SetRequestHeader("Authorization", "Bearer " + apiKey);
+            UnityEngine.Debug.Log("Sending JSON: " + jsonData); // Let's see exactly what we are sending
 
-            UnityEngine.Debug.Log("Sending battle data to AI...");
-
-            // 4. Send the request and pause the game until we get an answer
             yield return request.SendWebRequest();
 
             if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
                 UnityEngine.Debug.LogError("AI Connection Failed: " + request.error);
-                callback("Attack"); // Default to an attack if the Wi-Fi drops
+                // THIS IS THE SMOKING GUN: Read Groq's rejection letter
+                UnityEngine.Debug.LogError("Groq's Exact Error: " + request.downloadHandler.text);
+
+                callback("Claw");
             }
             else
             {
-                // 5. Extract the AI's answer
-                string rawResponse = request.downloadHandler.text;
+                // 1. Read the giant JSON from Groq and force it to lowercase so we don't miss "claw" vs "Claw"
+                string rawResponse = request.downloadHandler.text.ToLower();
+                UnityEngine.Debug.Log("Raw AI JSON: " + rawResponse);
 
-                // We will add a JSON parser here later, but for now, let's just see if the raw response arrives!
-                UnityEngine.Debug.Log("AI Responded: " + rawResponse);
+                string chosenMove = "Claw"; // Our safe default
 
-                // Check if the AI's response contains the word "Heal"
-                if (rawResponse.Contains("Heal"))
-                {
-                    callback("Heal");
-                }
-                else
-                {
-                    callback("Attack");
-                }
+                // 2. Pluck the exact decision out of the JSON
+                if (rawResponse.Contains("flee")) chosenMove = "Flee";
+                else if (rawResponse.Contains("heal")) chosenMove = "Heal";
+                else if (rawResponse.Contains("claw")) chosenMove = "Claw";
+                else if (rawResponse.Contains("bite")) chosenMove = "Bite";
+                else if (rawResponse.Contains("tackle")) chosenMove = "Tackle";
+                else if (rawResponse.Contains("spirit")) chosenMove = "SpiritStrike";
+
+                // 3. Print exactly what we are handing to the BattleSystem so you can see it!
+                UnityEngine.Debug.Log("TRANSLATED MOVE: " + chosenMove);
+
+                callback(chosenMove);
             }
         }
+        
     }
 }

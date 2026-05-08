@@ -151,7 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BattleSystem
   state: 0
   playerHP: 100
-  enemyHP: 100
+  enemyHP: 30
   dialogueText: {fileID: 761257843}
   llmBrain: {fileID: 1265594}
 --- !u!4 &1265593

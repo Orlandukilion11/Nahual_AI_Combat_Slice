@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
 
@@ -12,7 +11,7 @@ public class BattleSystem : MonoBehaviour
 
     [Header("Fighter Stats")]
     public int playerHP = 100;
-    public int enemyHP = 100;
+    public int enemyHP = 30;
 
     [Header("UI References")]
     public UnityEngine.UI.Text dialogueText;
@@ -45,7 +44,7 @@ public class BattleSystem : MonoBehaviour
     {
         if (state != BattleState.PLAYERTURN) return;
 
-        int damage = UnityEngine.Random.Range(15, 25);
+        int damage = UnityEngine.Random.Range(5, 10);
         enemyHP -= damage;
         dialogueText.text = "You dealt " + damage + " damage!";
 
@@ -73,27 +72,54 @@ public class BattleSystem : MonoBehaviour
     // 2. The AI's answer arrives here
     void ExecuteAIAction(string aiDecision)
     {
+        // This cleans up the AI's response just in case it accidentally adds a period or space
+        aiDecision = aiDecision.Trim().Trim('.', '"');
+
         if (aiDecision == "Heal")
         {
             int healAmount = 25;
             enemyHP += healAmount;
-            dialogueText.text = "The AI chose to HEAL! Nahual recovered " + healAmount + " HP.";
+            dialogueText.text = "The Nahual chose to HEAL! It recovered " + healAmount + " HP.";
         }
-        else // It chose to Attack
+        else if (aiDecision == "Flee")
         {
+            dialogueText.text = "The Nahual respects your strength and FLED the battle!";
+            state = BattleState.WON; // Fleeing ends the battle
+        }
+        else if (aiDecision == "Claw" || aiDecision == "Bite" || aiDecision == "Tackle" || aiDecision == "SpiritStrike")
+        {
+            // For now, all 4 moves do random damage, but you can customize this later!
             int enemyDamage = UnityEngine.Random.Range(10, 20);
+
+            // Let's give SpiritStrike a little extra punch
+            if (aiDecision == "SpiritStrike") enemyDamage += 5;
+
             playerHP -= enemyDamage;
-            dialogueText.text = "The AI chose to ATTACK! You took " + enemyDamage + " damage.";
+            dialogueText.text = $"The Nahual used {aiDecision.ToUpper()}! You took {enemyDamage} damage.";
+        }
+        else
+        {
+            // A fallback just in case the AI says something confusing
+            int enemyDamage = 10;
+            playerHP -= enemyDamage;
+            dialogueText.text = "The Nahual thrashes wildly for " + enemyDamage + " damage!";
         }
 
-        // Move to the final step
-        StartCoroutine(FinishEnemyTurn());
+        // We pass the decision to the final step so it knows if the battle ended
+        StartCoroutine(FinishEnemyTurn(aiDecision));
     }
 
-    // 3. We calculate if anyone died and pass the turn back to the player
-    IEnumerator FinishEnemyTurn()
+    // 3. We calculate if anyone died (or fled) and pass the turn back
+    IEnumerator FinishEnemyTurn(string lastEnemyAction)
     {
         yield return new WaitForSeconds(3f);
+
+        if (lastEnemyAction == "Flee")
+        {
+            // If it fled, we send the player back to the Overworld!
+            UnityEngine.SceneManagement.SceneManager.LoadScene("OverworldScene");
+            yield break; // This stops the Coroutine instantly
+        }
 
         if (playerHP <= 0)
         {
